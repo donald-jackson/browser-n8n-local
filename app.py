@@ -24,6 +24,7 @@ from langchain_anthropic import ChatAnthropic
 from langchain_mistralai import ChatMistralAI
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_ollama import ChatOllama
+from langchain_aws import ChatBedrock
 from langchain_openai import AzureChatOpenAI, ChatOpenAI
 from pydantic import BaseModel, Field
 
@@ -120,7 +121,7 @@ tasks: Dict[str, Dict] = {}
 # Models
 class TaskRequest(BaseModel):
     task: str
-    ai_provider: Optional[str] = "openai"  # Default to OpenAI
+    ai_provider: Optional[str] = os.environ.get("DEFAULT_AI_PROVIDER", "openai")  # Default to OpenAI or env var
     save_browser_data: Optional[bool] = False  # Whether to save browser cookies
     headful: Optional[bool] = None  # Override BROWSER_USE_HEADFUL setting
     use_custom_chrome: Optional[bool] = (
@@ -162,6 +163,10 @@ def get_llm(ai_provider: str):
             azure_deployment=os.environ.get("AZURE_DEPLOYMENT_NAME"),
             openai_api_version=os.environ.get("AZURE_API_VERSION", "2023-05-15"),
             azure_endpoint=os.environ.get("AZURE_ENDPOINT"),
+        )
+    elif ai_provider == "bedrock":
+        return ChatBedrock(
+            model_id=os.environ.get("BEDROCK_MODEL_ID", "anthropic.claude-3-sonnet-20240229-v1:0")
         )
     else:  # default to OpenAI
         base_url = os.environ.get("OPENAI_BASE_URL")
@@ -217,10 +222,10 @@ async def execute_task(task_id: str, instruction: str, ai_provider: str):
             chrome_path = os.environ.get("CHROME_PATH")
             chrome_user_data = os.environ.get("CHROME_USER_DATA")
 
-        sensitive_data = {
-            "X_NAME": os.environ.get("X_NAME"),
-            "X_PASSWORD": os.environ.get("X_PASSWORD"),
-        }
+        sensitive_data = {}
+        for key, value in os.environ.items():
+            if key.startswith("X_") and value:
+                sensitive_data[key] = value
 
         # Configure agent options - start with basic configuration
         agent_kwargs = {
