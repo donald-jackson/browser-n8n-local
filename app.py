@@ -446,7 +446,7 @@ async def automated_screenshot(agent, task_id, user_id=DEFAULT_USER_ID):
     visit_log = agent.state.history.urls()
     current_url = current_page.url
     previous_url = visit_log[-2] if len(visit_log) >= 2 else None
-    print(f"Agent was last on URL: {previous_url} and is now on {current_url}")
+    logger.info(f"Agent was last on URL: {previous_url} and is now on {current_url}")
     await capture_screenshot(agent, task_id, user_id)
 
 
