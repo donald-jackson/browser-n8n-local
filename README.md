@@ -20,7 +20,7 @@ This is a local bridge service that enables n8n to communicate with the Browser 
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/yourusername/browser-n8n-local.git
+   [browser-n8n-local.git](https://github.com/henry0hai/browser-n8n-local)
    cd browser-n8n-local
    ```
 
