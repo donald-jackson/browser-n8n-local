@@ -101,6 +101,8 @@ You can configure the service by editing the `.env` file.  Available options are
 
 ### LLM Provider Configuration
 
+The application supports multiple AI providers. You can specify the provider in each request using the `ai_provider` parameter. If not specified, it defaults to `openai`. To change the default provider, set the `DEFAULT_AI_PROVIDER` environment variable.
+
 #### OpenAI
 
 - `OPENAI_API_KEY`: Your OpenAI API key.
@@ -133,6 +135,15 @@ You can configure the service by editing the `.env` file.  Available options are
 - `AZURE_ENDPOINT`: Your Azure OpenAI endpoint URL.
 - `AZURE_DEPLOYMENT_NAME`: Your deployment name.
 - `AZURE_API_VERSION`: API version to use.
+
+#### Amazon Bedrock
+
+- `BEDROCK_MODEL_ID`: The model ID to use for Amazon Bedrock (e.g., `anthropic.claude-3-sonnet-20240229-v1:0`).
+- `AWS_ACCESS_KEY_ID`: Your AWS Access Key ID.
+- `AWS_SECRET_ACCESS_KEY`: Your AWS Secret Access Key.
+- `AWS_REGION`: The AWS region where your Bedrock service is hosted (e.g., `us-east-1`).
+
+If `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_REGION` are not explicitly set, the AWS SDK will attempt to use its default credential provider chain (e.g., IAM roles, shared credentials file).
 
 ### Optional Configuration
 
